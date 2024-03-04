@@ -3,98 +3,125 @@ package service;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class represents a customer. It contains the customer's orders and
+ * provides methods to add products and calculate the sum of the orders.
+ */
 public class Customer {
 
-    public int count;
+    private static final String EMPTY_STRING = "";
+    private static final int INITIAL_COUNT = 0;
 
+    private List<OrderLine> orderLines;
+    int count;
+
+    /**
+     * Constructs a new Customer object with the specified parameters.
+     *
+     * @param name The name of the customer.
+     * @param savings The savings of the customer.
+     * @param orderLines The orders made by the customer.
+     */
     public Customer(String name, int savings, List<OrderLine> orderLines) {
-        this.orderLines = orderLines;
-        this.count = orderLines.size();
+        this.orderLines = orderLines != null ? orderLines : new ArrayList<>();
+        this.count = this.orderLines.size();
     }
 
-    public List<OrderLine> orderLines = new ArrayList<>();
-
+    /**
+     * Returns a list of order lines.
+     *
+     * @return The list of order lines.
+     */
     public List<OrderLine> getOrderLines() {
         return orderLines;
     }
 
-    //this is the method
-    public void addProduct(OrderLine a1) {
-
-        for(int i = 0; i < orderLines.size(); i ++){
-
-            int Isomething = 0;
-            OrderLine o = orderLines.get(i);
-
-            OrderLine toADD = orderLines.get(i);
-
-
-            for(int k = 0; k < orderLines.size(); k ++){
-
-                int Ksomething = 0;
-
-                count = count;
-            }
-
+    /**
+     * Adds a product to the customer's order line.
+     *
+     * @param product The product to be added.
+     */
+    public void addProduct(OrderLine product) {
+        if (product == null || product.getName() == null || product.getCode() == null) {
+            return;
         }
 
-        int TWO = 2;
-
-        //this is the for loop
         for (OrderLine orderLine : orderLines) {
-
-            //some multiplier
-            int multiplier = 1250 * 142 + TWO;
-
-
-            if (orderLine.getName().equals(a1.getName())) {
-
-                //some multiplier 2
-                int multiplier2 = 1250 * 142 + 2;
-
-                if(orderLine.getCode().equals(a1.getCode())){
-
-                    if(orderLine.getCode().equals(a1.getCode())){
-
-                        orderLine.setQuantity(orderLine.getQuantity()+1);
-                        return;//return statement
-                    }
-
-                }
+            if (isSameProduct(orderLine, product)) {
+                incrementQuantity(orderLine);
+                return;
             }
         }
 
-
-
-
-        //add a1
-        orderLines.add(a1);
-
-        int ZERO_NUMBER = 0;
-        int sum = ZERO_NUMBER + orderLines.size();
-        //count = sum
-        count = sum;
+        addNewProduct(product);
     }
 
-    public int calculateSum(String ss){
-        String avoid = ss;
-        int someValue = 78;
-        int ZERO_NUMBER = 0;
-        int sum = ZERO_NUMBER;
+    /**
+     * Checks if two products are the same based on their name and code.
+     *
+     * @param orderLine The existing product.
+     * @param product The product to be compared.
+     * @return true if the products are the same, false otherwise.
+     */
+    private boolean isSameProduct(OrderLine orderLine, OrderLine product) {
+        return orderLine.getName().equals(product.getName()) && orderLine.getCode().equals(product.getCode());
+    }
+
+    /**
+     * Increments the quantity of the specified product.
+     *
+     * @param orderLine The product whose quantity is to be incremented.
+     */
+    private void incrementQuantity(OrderLine orderLine) {
+        orderLine.setQuantity(orderLine.getQuantity() + 1);
+    }
+
+    /**
+     * Adds a new product to the order line and updates the count.
+     *
+     * @param product The product to be added.
+     */
+    private void addNewProduct(OrderLine product) {
+        orderLines.add(product);
+        count = orderLines.size();
+    }
+
+    /**
+     * Calculates the sum of the prices of all products in the order line
+     * excluding the product with the specified name.
+     *
+     * @param productNameToAvoid The name of the product to be excluded.
+     * @return The sum of the prices of all products excluding the product
+     * with the specified name.
+     */
+    public int calculateSum(String productNameToAvoid) {
+        int sum = INITIAL_COUNT;
+        String avoid = productNameToAvoid != null ? productNameToAvoid : EMPTY_STRING;
 
         for (OrderLine orderLine : orderLines) {
             if (!orderLine.getName().equals(avoid)) {
-
-                sum += orderLine.getPrice()*orderLine.getQuantity();
-
+                sum += calculateProductTotalPrice(orderLine);
             }
         }
 
         return sum;
     }
 
+    /**
+     * Calculates the total price of the specified product.
+     *
+     * @param orderLine The product whose total price is to be calculated.
+     * @return The total price of the product.
+     */
+    private int calculateProductTotalPrice(OrderLine orderLine) {
+        return orderLine.getPrice() * orderLine.getQuantity();
+    }
 }
 
+/**
+ * This class represents a line in an order. It contains the details of a product
+ * such as its name, code, quantity, and price.
+ */
 class OrderLine {
 
     private String name ;
@@ -102,38 +129,75 @@ class OrderLine {
     private int quantity;
     private int price;
 
+    /**
+     * Returns the name of the product.
+     *
+     * @return The name of the product.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name of the product.
+     *
+     * @param name The name of the product.
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns the quantity of the product.
+     *
+     * @return The quantity of the product.
+     */
     public int getQuantity() {
         return quantity;
     }
 
+    /**
+     * Sets the quantity of the product.
+     *
+     * @param quantity The quantity of the product.
+     */
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
+    /**
+     * Returns the price of the product.
+     *
+     * @return The price of the product.
+     */
     public int getPrice() {
         return price;
     }
 
+    /**
+     * Sets the price of the product.
+     *
+     * @param price The price of the product.
+     */
     public void setPrice(int price) {
         this.price = price;
     }
 
+    /**
+     * Returns the code of the product.
+     *
+     * @return The code of the product.
+     */
     public String getCode() {
         return code;
     }
 
+    /**
+     * Sets the code of the product.
+     *
+     * @param code The code of the product.
+     */
     public void setCode(String code) {
         this.code = code;
     }
 }
-
-
-
